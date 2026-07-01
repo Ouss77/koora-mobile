@@ -38,7 +38,7 @@ export default function LoginScreen() {
           <View className="flex-row justify-center gap-1">
             <Text className="text-base text-zinc-600">No account yet?</Text>
             <Link
-              href={"/register" as never}
+              href="./register"
               className="text-base font-semibold text-green-700"
             >
               Register

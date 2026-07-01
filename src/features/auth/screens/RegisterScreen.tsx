@@ -47,7 +47,7 @@ export default function RegisterScreen() {
               Already have an account?
             </Text>
             <Link
-              href={"/login" as never}
+              href="./login"
               className="text-base font-semibold text-green-700"
             >
               Login
