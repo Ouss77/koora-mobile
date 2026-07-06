@@ -1,50 +1,267 @@
-# Welcome to your Expo app 👋
+# ⚽ KOORA
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+KOORA is a mobile football prediction application built with React Native (Expo) and Supabase.
 
-## Get started
+The objective of the project is to provide a simple MVP where users can predict football match results, earn points, and compete in a global ranking.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+# Features (MVP)
 
-2. Start the app
+- User registration
+- Login with username + password
+- Email stored for account recovery (not used for login)
+- View upcoming matches
+- Submit predictions
+- Edit predictions before kickoff
+- Automatic prediction locking
+- Personal results
+- Global ranking
+- Admin dashboard
+- Match management
+- Result management
+- Automatic points calculation
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+# Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Frontend
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- React Native
+- Expo
+- Expo Router
+- NativeWind
+- TypeScript
 
-## Get a fresh project
+Backend
 
-When you're ready, run:
+- Supabase
+- PostgreSQL
 
-```bash
-npm run reset-project
+Libraries
+
+- TanStack Query
+- React Hook Form
+- Zod
+- date-fns
+- Lucide Icons
+
+---
+
+# Architecture
+
+The project follows a Feature First architecture.
+
+```
+src/
+│
+├── app/
+├── assets/
+├── core/
+│   ├── config/
+│   ├── constants/
+│   ├── supabase/
+│   ├── types/
+│   └── utils/
+│
+├── shared/
+│   ├── components/
+│   ├── hooks/
+│   └── ui/
+│
+└── features/
+    ├── auth/
+    ├── matches/
+    ├── predictions/
+    ├── ranking/
+    └── admin/
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+# Project Layers
 
-To learn more about developing your project with Expo, look at the following resources:
+UI
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+↓
 
-## Join the community
+TanStack Query
 
-Join our community of developers creating universal apps.
+↓
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Services
+
+↓
+
+Repositories
+
+↓
+
+Supabase
+
+↓
+
+PostgreSQL
+
+---
+
+# Database
+
+Main tables
+
+- users
+- matches
+- predictions
+
+Main relations
+
+Users (1) ----< Predictions >---- (1) Matches
+
+---
+
+# Authentication
+
+The application uses Supabase Auth.
+
+Users login with:
+
+- username
+- password
+
+Internally:
+
+username
+
+↓
+
+lookup email
+
+↓
+
+Supabase signInWithPassword(email, password)
+
+Email is stored only for:
+
+- account recovery
+- future password reset (V2)
+
+---
+
+# Roles
+
+- user
+- admin
+
+The admin is simply a normal user with role = admin.
+
+---
+
+# Match Status
+
+- upcoming
+- locked
+- finished
+
+---
+
+# Prediction Results
+
+- team1
+- draw
+- team2
+
+Correct prediction
+
+= 3 points
+
+Wrong prediction
+
+= 0 point
+
+---
+
+# Installation
+
+Clone repository
+
+```bash
+git clone https://github.com/your-org/koora-mobile.git
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Create .env
+
+```env
+EXPO_PUBLIC_SUPABASE_URL=
+
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Run project
+
+```bash
+npx expo start
+```
+
+---
+
+# Development Rules
+
+- No direct Supabase calls inside screens
+- Business logic belongs to Services
+- Data access belongs to Repositories
+- Validate all forms using Zod
+- Use TanStack Query for server state
+
+---
+
+# Git Workflow
+
+main
+
+↓
+
+develop
+
+↓
+
+feature/*
+
+↓
+
+Pull Request
+
+↓
+
+Code Review
+
+↓
+
+Merge
+
+---
+
+# Roadmap
+
+V1
+
+- Authentication
+- Predictions
+- Ranking
+- Administration
+
+V2
+
+- Football API
+- Notifications
+- Private leagues
+- Friends
+- Google Login
+- Email Login
+- Password Reset
