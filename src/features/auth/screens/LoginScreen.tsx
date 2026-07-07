@@ -3,12 +3,18 @@ import { Input } from "@/shared/ui/Input";
 import { Logo } from "@/shared/ui/Logo";
 import { Screen } from "@/shared/ui/Screen";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+
+import { useLogin } from "../hooks/useLogin";
 import { LoginFormData, loginSchema } from "../schemas/loginSchema";
 
 export default function LoginScreen() {
+  const router = useRouter();
+
+  const { mutate, isPending, error } = useLogin();
+
   const {
     control,
     handleSubmit,
@@ -20,9 +26,15 @@ export default function LoginScreen() {
       password: "",
     },
   });
+
   const onSubmit = (data: LoginFormData) => {
-    console.log("Donnees de connexion:", data);
+    mutate(data, {
+      onSuccess: () => {
+        router.replace("/");
+      },
+    });
   };
+
   return (
     <Screen contentClassName="justify-center">
       <KeyboardAvoidingView
@@ -30,7 +42,9 @@ export default function LoginScreen() {
         className="gap-10"
       >
         <Logo subtitle="Bon retour sur KOORA" />
+
         <View className="gap-4">
+          {/* Username */}
           <Controller
             control={control}
             name="username"
@@ -46,11 +60,14 @@ export default function LoginScreen() {
               />
             )}
           />
+
           {errors.username && (
             <Text className="text-red-500 text-sm">
               {errors.username.message}
             </Text>
           )}
+
+          {/* Password */}
           <Controller
             control={control}
             name="password"
@@ -65,18 +82,33 @@ export default function LoginScreen() {
               />
             )}
           />
+
           {errors.password && (
             <Text className="text-red-500 text-sm">
               {errors.password.message}
             </Text>
           )}
         </View>
+
+        {/* Authentication error */}
+        {error && (
+          <Text className="text-red-500 text-sm text-center">
+            {error.message}
+          </Text>
+        )}
+
         <View className="gap-5">
-          <Button title="Se connecter" onPress={handleSubmit(onSubmit)} />
+          <Button
+            title={isPending ? "Connexion..." : "Se connecter"}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
+          />
+
           <View className="flex-row justify-center gap-1">
             <Text className="text-base text-zinc-600">
               Pas encore de compte ?
             </Text>
+
             <Link
               href="./register"
               className="text-base font-semibold text-green-700"

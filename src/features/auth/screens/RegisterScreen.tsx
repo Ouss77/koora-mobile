@@ -1,38 +1,39 @@
+import { View, Text } from "react-native";
+import { Link, useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
 import { Logo } from "@/shared/ui/Logo";
 import { Screen } from "@/shared/ui/Screen";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
-import { RegisterFormData, registerSchema } from "../schemas/registerSchema";
+import { registerSchema, RegisterFormData } from "../schemas/registerSchema";
+import { useRegister } from "../hooks/useRegister";
 
 export default function RegisterScreen() {
+  const router = useRouter();
+  const { mutate, isPending, error } = useRegister();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: { username: "", email: "", password: "", confirmPassword: "" },
   });
 
   const onSubmit = (data: RegisterFormData) => {
-    console.log("Formulaire inscription valide:", data);
+    mutate(data, {
+      onSuccess: () => {
+        router.replace("/"); // redirection temporaire — Task 11/12 gèreront ça proprement
+      },
+    });
   };
 
   return (
     <Screen contentClassName="justify-center">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="gap-10"
-      >
-        <Logo subtitle="Cree ton compte KOORA" />
+      <View className="gap-10">
+        <Logo subtitle="Create your KOORA account" />
 
         <View className="gap-4">
           <Controller
@@ -43,62 +44,67 @@ export default function RegisterScreen() {
                 value={value}
                 onChangeText={onChange}
                 autoCapitalize="none"
-                autoCorrect={false}
-                label="Pseudo"
-                placeholder="Choisis un pseudo"
-                textContentType="username"
-                error={errors.username?.message}
+                label="Username"
+                placeholder="Enter your username"
               />
             )}
           />
+          {errors.username && <Text className="text-red-500 text-sm">{errors.username.message}</Text>}
+
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                value={value}
+                onChangeText={onChange}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                label="Email"
+                placeholder="Enter your email"
+              />
+            )}
+          />
+          {errors.email && <Text className="text-red-500 text-sm">{errors.email.message}</Text>}
 
           <Controller
             control={control}
             name="password"
             render={({ field: { onChange, value } }) => (
-              <Input
-                value={value}
-                onChangeText={onChange}
-                label="Mot de passe"
-                placeholder="Cree un mot de passe"
-                secureTextEntry
-                textContentType="newPassword"
-                error={errors.password?.message}
-              />
+              <Input value={value} onChangeText={onChange} label="Password" secureTextEntry />
             )}
           />
+          {errors.password && <Text className="text-red-500 text-sm">{errors.password.message}</Text>}
 
           <Controller
             control={control}
             name="confirmPassword"
             render={({ field: { onChange, value } }) => (
-              <Input
-                value={value}
-                onChangeText={onChange}
-                label="Confirmer le mot de passe"
-                placeholder="Saisis a nouveau ton mot de passe"
-                secureTextEntry
-                textContentType="newPassword"
-                error={errors.confirmPassword?.message}
-              />
+              <Input value={value} onChangeText={onChange} label="Confirm Password" secureTextEntry />
             )}
           />
+          {errors.confirmPassword && (
+            <Text className="text-red-500 text-sm">{errors.confirmPassword.message}</Text>
+          )}
         </View>
 
-        <View className="gap-5">
-          <Button title="S'inscrire" onPress={handleSubmit(onSubmit)} />
+        {/* Task 13 affinera l'affichage des erreurs métier (AuthError) */}
+        {error && <Text className="text-red-500 text-sm text-center">{error.message}</Text>}
 
+        <View className="gap-5">
+          <Button
+            title={isPending ? "Loading..." : "Register"}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
+          />
           <View className="flex-row justify-center gap-1">
-            <Text className="text-base text-zinc-600">Deja un compte ?</Text>
-            <Link
-              href="./login"
-              className="text-base font-semibold text-green-700"
-            >
-              Se connecter
+            <Text className="text-base text-zinc-600">Already have an account?</Text>
+            <Link href="/login" className="text-base font-semibold text-green-700">
+              Login
             </Link>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Screen>
   );
 }
