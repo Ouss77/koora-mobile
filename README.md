@@ -1,76 +1,60 @@
-# ⚽ KOORA
+## 🏗️ Architecture
 
-KOORA is a mobile football prediction application built with React Native (Expo) and Supabase.
+KOORA V1 repose sur une architecture multicouche stricte : **UI → Services → Repositories → Supabase**.
 
-The objective of the project is to provide a simple MVP where users can predict football match results, earn points, and compete in a global ranking.
+### Règles architecturales critiques
 
----
+- **Zéro communication directe** : aucun écran ou composant ne communique directement avec Supabase.
+- **Logique centralisée** : toute la logique métier passe exclusivement par un **Service**.
+- **Accès aux données isolé** : tous les accès aux données passent exclusivement par un **Repository** dédié.
 
-# Features (MVP)
+```
+[ UI / Écrans ]
+      │
+      ▼
+[ Services ] ◄─── (Cache : TanStack Query)
+      │
+      ▼
+[ Repositories ]
+      │
+      ▼
+[ Supabase Client ] ─► Auth | API | PostgreSQL
+```
 
-- User registration
-- Login with username + password
-- Email stored for account recovery (not used for login)
-- View upcoming matches
-- Submit predictions
-- Edit predictions before kickoff
-- Automatic prediction locking
-- Personal results
-- Global ranking
-- Admin dashboard
-- Match management
-- Result management
-- Automatic points calculation
+## 📦 Stack technique
 
----
+| Domaine          | Technologie      |
+|-------------------|------------------|
+| Mobile            | React Native (Expo) |
+| Langage           | TypeScript |
+| Navigation        | Expo Router (file-based routing) |
+| UI                | NativeWind (Tailwind CSS) |
+| Backend           | Supabase (BaaS) |
+| Base de données   | PostgreSQL |
+| Authentification  | Supabase Auth |
+| Server State      | TanStack Query |
+| Validation        | Zod |
+| Formulaires       | React Hook Form |
+| Icônes            | Lucide Icons |
+| Dates             | date-fns |
 
-# Tech Stack
-
-Frontend
-
-- React Native
-- Expo
-- Expo Router
-- NativeWind
-- TypeScript
-
-Backend
-
-- Supabase
-- PostgreSQL
-
-Libraries
-
-- TanStack Query
-- React Hook Form
-- Zod
-- date-fns
-- Lucide Icons
-
----
-
-# Architecture
-
-The project follows a Feature First architecture.
+## 📁 Organisation du projet (Feature First)
 
 ```
 src/
-│
-├── app/
-├── assets/
-├── core/
+├── app/            # Points d'entrée de navigation (Expo Router)
+├── assets/         # Fichiers statiques
+├── core/           # Logique transverse globale
 │   ├── config/
 │   ├── constants/
-│   ├── supabase/
+│   ├── supabase/   # Client Supabase initialisé
 │   ├── types/
 │   └── utils/
-│
-├── shared/
+├── shared/         # Code partagé réutilisable partout (agnostique du métier)
 │   ├── components/
-│   ├── hooks/
-│   └── ui/
-│
-└── features/
+│   ├── hooks/      # Hooks génériques (ex: useDebounce) — PAS les hooks métier
+│   └── ui/         # Design system atomique (Input, Button, Logo...)
+└── features/       # Organisation par domaine fonctionnel
     ├── auth/
     ├── matches/
     ├── predictions/
@@ -78,190 +62,52 @@ src/
     └── admin/
 ```
 
----
+### Structure d'une feature
 
-# Project Layers
-
-UI
-
-↓
-
-TanStack Query
-
-↓
-
-Services
-
-↓
-
-Repositories
-
-↓
-
-Supabase
-
-↓
-
-PostgreSQL
-
----
-
-# Database
-
-Main tables
-
-- users
-- matches
-- predictions
-
-Main relations
-
-Users (1) ----< Predictions >---- (1) Matches
-
----
-
-# Authentication
-
-The application uses Supabase Auth.
-
-Users login with:
-
-- username
-- password
-
-Internally:
-
-username
-
-↓
-
-lookup email
-
-↓
-
-Supabase signInWithPassword(email, password)
-
-Email is stored only for:
-
-- account recovery
-- future password reset (V2)
-
----
-
-# Roles
-
-- user
-- admin
-
-The admin is simply a normal user with role = admin.
-
----
-
-# Match Status
-
-- upcoming
-- locked
-- finished
-
----
-
-# Prediction Results
-
-- team1
-- draw
-- team2
-
-Correct prediction
-
-= 3 points
-
-Wrong prediction
-
-= 0 point
-
----
-
-# Installation
-
-Clone repository
-
-```bash
-git clone https://github.com/your-org/koora-mobile.git
+```
+feature_name/
+├── screens/         # Vues et écrans principaux
+├── components/      # Sous-composants locaux
+├── hooks/           # Hooks TanStack Query dédiés (queries & mutations)
+├── services/        # Logique métier du domaine
+├── repositories/     # Requêtes vers Supabase
+├── types/
+└── schemas/         # Schémas Zod
 ```
 
-Install dependencies
+> **Règle de placement des hooks** : un hook qui dépend d'un Service métier (ex: `useLogin`) va dans `features/<domaine>/hooks/`. Un hook totalement générique, réutilisable dans n'importe quel projet (ex: `useDebounce`) va dans `shared/hooks/`.
 
-```bash
-npm install
+## 🧑‍💻 Conventions de code
+
+- **camelCase** : variables, fonctions
+- **PascalCase** : composants, classes, interfaces
+- **Validation** : Zod obligatoire sur tous les formulaires utilisateurs
+
+## 🔐 Variables d'environnement
+
+Fichier `.env` à la racine :
+
 ```
-
-Create .env
-
-```env
 EXPO_PUBLIC_SUPABASE_URL=
-
 EXPO_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Run project
+## 🗄️ Base de données
 
-```bash
-npx expo start
-```
+| Table | Description |
+|---|---|
+| `users` | `id`, `username` (unique), `email` (unique, sécurité interne — jamais utilisé pour se connecter), `role` (`user`/`admin`), `created_at` |
+| `matches` | `id`, `team1`, `team2`, `kickoff_at`, `status`, `result` |
+| `predictions` | `id`, `user_id`, `match_id`, `prediction`, `points_awarded` (contrainte `unique(user_id, match_id)`) |
 
----
+**Authentification** : connexion **par pseudo uniquement** (pas par email). L'email est collecté à l'inscription pour la sécurité/récupération de compte, jamais comme identifiant de connexion. La traduction username → email nécessaire pour Supabase Auth est encapsulée dans une fonction SQL `get_email_by_username` (`SECURITY DEFINER`), elle-même appelée uniquement par l'`AuthRepository`.
 
-# Development Rules
+## 🔒 Sécurité
 
-- No direct Supabase calls inside screens
-- Business logic belongs to Services
-- Data access belongs to Repositories
-- Validate all forms using Zod
-- Use TanStack Query for server state
+- Authentification via Supabase Auth (JWT, session persistante chiffrée)
+- Row Level Security (RLS) activée sur toutes les tables : un utilisateur ne peut lire/modifier que ses propres données
+- Tous les contrôles de rôle (`admin`) sont revalidés côté serveur, jamais uniquement côté UI
 
----
+## 📌 Product Backlog — hors scope V1
 
-# Git Workflow
-
-main
-
-↓
-
-develop
-
-↓
-
-feature/*
-
-↓
-
-Pull Request
-
-↓
-
-Code Review
-
-↓
-
-Merge
-
----
-
-# Roadmap
-
-V1
-
-- Authentication
-- Predictions
-- Ranking
-- Administration
-
-V2
-
-- Football API
-- Notifications
-- Private leagues
-- Friends
-- Google Login
-- Email Login
-- Password Reset
+Google Auth, authentification par email, reset password self-service, API Football, ligues privées, chat, notifications, réseau social — voir le Cahier des Charges (section 9) pour la liste complète.
