@@ -21,18 +21,23 @@ export const authService = {
     try {
       const { username, email, password } = parsed.data;
       return await authRepository.signUp(username, email, password);
-    } catch (error: any) {
-      if (error?.message === "Network request failed" || error?.name === "TypeError") {
-        throw new AuthError("Impossible de se connecter au serveur. Vérifie ta connexion internet.");
-      }
-      if (error?.code === "23505" || error?.message?.includes("duplicate")) {
-        throw new AuthError("Ce pseudo ou cet email est déjà utilisé.");
-      }
-      if (error?.message?.includes("Password")) {
-        throw new AuthError("Le mot de passe ne respecte pas les critères de sécurité.");
-      }
-      throw new AuthError("Une erreur est survenue lors de l'inscription. Réessaie plus tard.");
-    }
+} catch (error: any) {
+  if (error?.message === "Network request failed" || error?.name === "TypeError") {
+    throw new AuthError("Impossible de se connecter au serveur. Vérifie ta connexion internet.");
+  }
+  if (
+    error?.code === "user_already_exists" ||
+    error?.code === "23505" ||
+    error?.message?.includes("duplicate") ||
+    error?.message?.includes("already registered")
+  ) {
+    throw new AuthError("Ce pseudo ou cet email est déjà utilisé.");
+  }
+  if (error?.message?.includes("Password")) {
+    throw new AuthError("Le mot de passe ne respecte pas les critères de sécurité.");
+  }
+  throw new AuthError("Une erreur est survenue lors de l'inscription. Réessaie plus tard.");
+}
   },
 
   async login(formData: LoginFormData) {

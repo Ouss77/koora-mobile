@@ -1,13 +1,13 @@
-import { View, Text } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
 import { Logo } from "@/shared/ui/Logo";
-import { Screen } from "@/shared/ui/Screen";
-import { registerSchema, RegisterFormData } from "../schemas/registerSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
+import { AuthPage } from "../components/AuthPage";
 import { useRegister } from "../hooks/useRegister";
+import { RegisterFormData, registerSchema } from "../schemas/registerSchema";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -23,88 +23,111 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = (data: RegisterFormData) => {
-    mutate(data, {
-      onSuccess: () => {
-        router.replace("/"); // redirection temporaire — Task 11/12 gèreront ça proprement
-      },
-    });
+    mutate(data, { onSuccess: () => router.replace("/") });
   };
 
   return (
-    <Screen contentClassName="justify-center">
-      <View className="gap-10">
-        <Logo subtitle="Create your KOORA account" />
+    <AuthPage>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="flex-1"
+      >
+        <ScrollView
+          contentContainerClassName="flex-1 justify-center px-6"
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="items-center mb-8">
+            <Logo subtitle="Create your KOORA account" />
+          </View>
 
-        <View className="gap-4">
-          <Controller
-            control={control}
-            name="username"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                value={value}
-                onChangeText={onChange}
-                autoCapitalize="none"
-                label="Username"
-                placeholder="Enter your username"
+          {/* Carte semi-opaque : règle la lisibilité quelle que soit l'image de fond */}
+          <View className="bg-white/95 rounded-3xl p-6 gap-4 shadow-lg">
+            <View>
+              <Text className="text-sm font-medium text-zinc-700 mb-1">Username</Text>
+              <Controller
+                control={control}
+                name="username"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    value={value}
+                    onChangeText={onChange}
+                    autoCapitalize="none"
+                    placeholder="Enter your username"
+                  />
+                )}
               />
-            )}
-          />
-          {errors.username && <Text className="text-red-500 text-sm">{errors.username.message}</Text>}
+              {errors.username && (
+                <Text className="text-red-500 text-sm mt-1">{errors.username.message}</Text>
+              )}
+            </View>
 
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, value } }) => (
-              <Input
-                value={value}
-                onChangeText={onChange}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                label="Email"
-                placeholder="Enter your email"
+            <View>
+              <Text className="text-sm font-medium text-zinc-700 mb-1">Email</Text>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    value={value}
+                    onChangeText={onChange}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    placeholder="Enter your email"
+                  />
+                )}
               />
+              {errors.email && (
+                <Text className="text-red-500 text-sm mt-1">{errors.email.message}</Text>
+              )}
+            </View>
+
+            <View>
+              <Text className="text-sm font-medium text-zinc-700 mb-1">Password</Text>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value } }) => (
+                  <Input value={value} onChangeText={onChange} secureTextEntry placeholder="••••••••" />
+                )}
+              />
+              {errors.password && (
+                <Text className="text-red-500 text-sm mt-1">{errors.password.message}</Text>
+              )}
+            </View>
+
+            <View>
+              <Text className="text-sm font-medium text-zinc-700 mb-1">Confirm Password</Text>
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, value } }) => (
+                  <Input value={value} onChangeText={onChange} secureTextEntry placeholder="••••••••" />
+                )}
+              />
+              {errors.confirmPassword && (
+                <Text className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</Text>
+              )}
+            </View>
+
+            {error && (
+              <Text className="text-red-500 text-sm text-center">{error.message}</Text>
             )}
-          />
-          {errors.email && <Text className="text-red-500 text-sm">{errors.email.message}</Text>}
 
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, value } }) => (
-              <Input value={value} onChangeText={onChange} label="Password" secureTextEntry />
-            )}
-          />
-          {errors.password && <Text className="text-red-500 text-sm">{errors.password.message}</Text>}
+            <Button
+              title={isPending ? "Loading..." : "Register"}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isPending}
+            />
+          </View>
 
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field: { onChange, value } }) => (
-              <Input value={value} onChangeText={onChange} label="Confirm Password" secureTextEntry />
-            )}
-          />
-          {errors.confirmPassword && (
-            <Text className="text-red-500 text-sm">{errors.confirmPassword.message}</Text>
-          )}
-        </View>
-
-        {/* Task 13 affinera l'affichage des erreurs métier (AuthError) */}
-        {error && <Text className="text-red-500 text-sm text-center">{error.message}</Text>}
-
-        <View className="gap-5">
-          <Button
-            title={isPending ? "Loading..." : "Register"}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isPending}
-          />
-          <View className="flex-row justify-center gap-1">
-            <Text className="text-base text-zinc-600">Already have an account?</Text>
-            <Link href="/login" className="text-base font-semibold text-green-700">
+          <View className="flex-row justify-center gap-1 mt-6">
+            <Text className="text-base text-white font-medium">Already have an account?</Text>
+            <Link href="/login" className="text-base font-bold text-green-400">
               Login
             </Link>
           </View>
-        </View>
-      </View>
-    </Screen>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </AuthPage>
   );
 }

@@ -11,7 +11,7 @@ export function Logo({ subtitle }: LogoProps) {
         <Text className="text-2xl font-black text-white">K</Text>
       </View>
 
-      <Text className="text-4xl font-black tracking-normal text-zinc-950">
+      <Text className="text-4xl font-black tracking-normal text-white">
         KOORA
       </Text>
 
