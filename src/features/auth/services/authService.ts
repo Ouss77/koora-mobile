@@ -24,12 +24,20 @@ export const authService = {
       const { username, email, password } = parsed.data;
       return await authRepository.signUp(username, email, password);
     } catch (error: any) {
+      if (error instanceof AuthError) {
+        throw error;
+      }
       // Traduction des erreurs techniques Supabase en messages métier clairs
       if (error?.code === "23505" || error?.message?.includes("duplicate")) {
         throw new AuthError("Ce pseudo ou cet email est déjà utilisé.");
       }
       if (error?.message?.includes("Password")) {
         throw new AuthError("Le mot de passe ne respecte pas les critères de sécurité.");
+      }
+      if (error?.message?.includes("closed or destroyed stream")) {
+        throw new AuthError(
+          "La connexion au serveur a été interrompue pendant l'inscription. Réessaie."
+        );
       }
       throw new AuthError("Une erreur est survenue lors de l'inscription. Réessaie plus tard.");
     }
