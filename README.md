@@ -1,50 +1,113 @@
-# Welcome to your Expo app 👋
+## 🏗️ Architecture
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+KOORA V1 repose sur une architecture multicouche stricte : **UI → Services → Repositories → Supabase**.
 
-## Get started
+### Règles architecturales critiques
 
-1. Install dependencies
+- **Zéro communication directe** : aucun écran ou composant ne communique directement avec Supabase.
+- **Logique centralisée** : toute la logique métier passe exclusivement par un **Service**.
+- **Accès aux données isolé** : tous les accès aux données passent exclusivement par un **Repository** dédié.
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+[ UI / Écrans ]
+      │
+      ▼
+[ Services ] ◄─── (Cache : TanStack Query)
+      │
+      ▼
+[ Repositories ]
+      │
+      ▼
+[ Supabase Client ] ─► Auth | API | PostgreSQL
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 📦 Stack technique
 
-## Learn more
+| Domaine          | Technologie      |
+|-------------------|------------------|
+| Mobile            | React Native (Expo) |
+| Langage           | TypeScript |
+| Navigation        | Expo Router (file-based routing) |
+| UI                | NativeWind (Tailwind CSS) |
+| Backend           | Supabase (BaaS) |
+| Base de données   | PostgreSQL |
+| Authentification  | Supabase Auth |
+| Server State      | TanStack Query |
+| Validation        | Zod |
+| Formulaires       | React Hook Form |
+| Icônes            | Lucide Icons |
+| Dates             | date-fns |
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📁 Organisation du projet (Feature First)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+src/
+├── app/            # Points d'entrée de navigation (Expo Router)
+├── assets/         # Fichiers statiques
+├── core/           # Logique transverse globale
+│   ├── config/
+│   ├── constants/
+│   ├── supabase/   # Client Supabase initialisé
+│   ├── types/
+│   └── utils/
+├── shared/         # Code partagé réutilisable partout (agnostique du métier)
+│   ├── components/
+│   ├── hooks/      # Hooks génériques (ex: useDebounce) — PAS les hooks métier
+│   └── ui/         # Design system atomique (Input, Button, Logo...)
+└── features/       # Organisation par domaine fonctionnel
+    ├── auth/
+    ├── matches/
+    ├── predictions/
+    ├── ranking/
+    └── admin/
+```
 
-## Join the community
+### Structure d'une feature
 
-Join our community of developers creating universal apps.
+```
+feature_name/
+├── screens/         # Vues et écrans principaux
+├── components/      # Sous-composants locaux
+├── hooks/           # Hooks TanStack Query dédiés (queries & mutations)
+├── services/        # Logique métier du domaine
+├── repositories/     # Requêtes vers Supabase
+├── types/
+└── schemas/         # Schémas Zod
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+> **Règle de placement des hooks** : un hook qui dépend d'un Service métier (ex: `useLogin`) va dans `features/<domaine>/hooks/`. Un hook totalement générique, réutilisable dans n'importe quel projet (ex: `useDebounce`) va dans `shared/hooks/`.
+
+## 🧑‍💻 Conventions de code
+
+- **camelCase** : variables, fonctions
+- **PascalCase** : composants, classes, interfaces
+- **Validation** : Zod obligatoire sur tous les formulaires utilisateurs
+
+## 🔐 Variables d'environnement
+
+Fichier `.env` à la racine :
+
+```
+EXPO_PUBLIC_SUPABASE_URL=
+EXPO_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+## 🗄️ Base de données
+
+| Table | Description |
+|---|---|
+| `users` | `id`, `username` (unique), `email` (unique, sécurité interne — jamais utilisé pour se connecter), `role` (`user`/`admin`), `created_at` |
+| `matches` | `id`, `team1`, `team2`, `kickoff_at`, `status`, `result` |
+| `predictions` | `id`, `user_id`, `match_id`, `prediction`, `points_awarded` (contrainte `unique(user_id, match_id)`) |
+
+**Authentification** : connexion **par pseudo uniquement** (pas par email). L'email est collecté à l'inscription pour la sécurité/récupération de compte, jamais comme identifiant de connexion. La traduction username → email nécessaire pour Supabase Auth est encapsulée dans une fonction SQL `get_email_by_username` (`SECURITY DEFINER`), elle-même appelée uniquement par l'`AuthRepository`.
+
+## 🔒 Sécurité
+
+- Authentification via Supabase Auth (JWT, session persistante chiffrée)
+- Row Level Security (RLS) activée sur toutes les tables : un utilisateur ne peut lire/modifier que ses propres données
+- Tous les contrôles de rôle (`admin`) sont revalidés côté serveur, jamais uniquement côté UI
+
+## 📌 Product Backlog — hors scope V1
+
+Google Auth, authentification par email, reset password self-service, API Football, ligues privées, chat, notifications, réseau social — voir le Cahier des Charges (section 9) pour la liste complète.
