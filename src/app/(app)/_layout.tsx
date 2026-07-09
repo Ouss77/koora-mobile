@@ -1,9 +1,9 @@
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, type Href } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import { useSession } from "@/features/auth/hooks/useSession";
+import { useAuthGuard } from "@/features/auth/hooks/useAuthGuard";
 
 export default function AppLayout() {
-  const { data: session, isLoading } = useSession();
+  const { isLoading, shouldRedirect, redirectTo } = useAuthGuard("requireAuth");
 
   if (isLoading) {
     return (
@@ -13,8 +13,8 @@ export default function AppLayout() {
     );
   }
 
-  if (!session) {
-    return <Redirect href="/login" />;
+  if (shouldRedirect) {
+    return <Redirect href={redirectTo as Href} />;
   }
 
   return (

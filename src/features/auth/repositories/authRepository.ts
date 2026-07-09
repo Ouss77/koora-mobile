@@ -1,20 +1,20 @@
 import { supabase } from "@/core/supabase/client";
 
 export const authRepository = {
-  async signUp(username: string, email: string, password: string) {
-    // 1. Création du compte dans auth.users (géré par Supabase Auth)
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    if (!data.user) throw new Error("Signup failed: no user returned");
+async signUp(username: string, email: string, password: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { username },
+    },
+  });
 
-    // 2. Création du profil dans public.users (username, email, role par défaut)
-    const { error: profileError } = await supabase
-      .from("users")
-      .insert({ id: data.user.id, username, email });
+  if (error) throw error;
+  if (!data.user) throw new Error("Signup failed: no user returned");
 
-    if (profileError) throw profileError;
-    return data;
-  },
+  return data;
+},
 
   async signIn(username: string, password: string) {
     // 1. Retrouver l'email correspondant au username via la fonction SQL
