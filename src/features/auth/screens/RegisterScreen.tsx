@@ -23,7 +23,7 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = (data: RegisterFormData) => {
-    mutate(data, { onSuccess: () => router.replace("/") });
+    mutate(data, { onSuccess: () => router.replace("/home") });
   };
 
   return (
