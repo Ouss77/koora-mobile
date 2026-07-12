@@ -1,5 +1,5 @@
-import { Match } from "../types/match";
 import { IMatchRepository } from "../repositories/IMatchRepository";
+import { Match } from "../types/match";
 
 export class MatchService {
   constructor(private readonly repository: IMatchRepository) {}
