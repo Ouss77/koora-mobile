@@ -72,7 +72,7 @@ async login(formData: LoginFormData) {
   async logout() {
     try {
       await authRepository.signOut();
-    } catch (error) {
+    } catch {
       throw new AuthError("Erreur lors de la déconnexion.");
     }
   },
@@ -80,7 +80,7 @@ async login(formData: LoginFormData) {
   async getCurrentSession() {
     try {
       return await authRepository.getSession();
-    } catch (error) {
+    } catch {
       throw new AuthError("Impossible de récupérer la session.");
     }
   },

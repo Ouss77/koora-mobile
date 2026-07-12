@@ -97,7 +97,7 @@ export default function LoginScreen() {
           <View className="flex-row justify-center gap-1 mt-6">
             <Text className="text-base text-white font-medium">Pas encore de compte ?</Text>
             <Link href="/register" className="text-base font-bold text-green-400">
-              S'inscrire
+              S&apos;inscrire
             </Link>
           </View>
         </ScrollView>
