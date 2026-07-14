@@ -1,4 +1,4 @@
-## 🏗️ Architecture
+      ## 🏗️ Architecture
 
 KOORA V1 repose sur une architecture multicouche stricte : **UI → Services → Repositories → Supabase**.
 
