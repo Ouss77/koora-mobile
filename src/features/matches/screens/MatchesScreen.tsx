@@ -1,6 +1,6 @@
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
-import { MatchCard } from "../shared/components/MatchCard";
+import { MatchCard } from "@/shared/components/MatchCard";
 import { useMatches } from "../hooks/useMatches";
 
 export function MatchesScreen() {
