@@ -2,6 +2,7 @@ import { IMatchRepository } from "../repositories/IMatchRepository";
 import { Match } from "../types/match";
 
 export class MatchService {
+  
   constructor(private readonly repository: IMatchRepository) {}
 
   async getMatches(): Promise<Match[]> {
