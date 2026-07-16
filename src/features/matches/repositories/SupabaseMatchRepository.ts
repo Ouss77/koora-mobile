@@ -5,6 +5,7 @@ import { MatchStatus } from "../types/match-status";
 import { IMatchRepository } from "./IMatchRepository";
 import { MatchRow, toMatch } from "../mappers/matchMapper";
 export class SupabaseMatchRepository implements IMatchRepository {
+
   private async fetchMatches(status?: MatchStatus): Promise<Match[]> {
     
     let query = supabase
@@ -22,7 +23,8 @@ const { data, error } = await query.returns<MatchRow[]>();
       throw new Error(error.message);
     }
 
-return (data ?? []).map(toMatch);  }
+  return (data ?? []).map(toMatch); 
+  }
 
   async list(): Promise<Match[]> {
     return this.fetchMatches();
@@ -38,5 +40,19 @@ return (data ?? []).map(toMatch);  }
 
   async listFinished(): Promise<Match[]> {
     return this.fetchMatches(MatchStatus.FINISHED);
+  }
+
+  async findById(id: string): Promise<Match | null> {
+  const { data, error } = await supabase
+    .from("matches")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle<MatchRow>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ? toMatch(data) : null;
   }
 }
