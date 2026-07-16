@@ -41,9 +41,6 @@ export class PredictionService {
       throw new MatchFinishedError(matchId);
     }
 
-    // La verite du verrou, c'est kickoff_at -- jamais `status`.
-    // Rien ne fait passer status de upcoming a locked en base (pas de cron
-    // en V1), donc un match d'hier soir est encore "upcoming". Cf. dette Issue 5.
     if (new Date() >= new Date(match.kickoffAt)) {
       throw new PredictionLockedError(matchId);
     }
@@ -64,15 +61,7 @@ export class PredictionService {
 
     return this.predictionRepository.upsert({ userId, matchId, prediction });
   }
-
-  /**
-   * Bouton "Valider mes pronostics" (CdC 3.5).
-   *
-   * Une seule requete pour lire les matchs, au lieu d'un findById par selection.
-   * Puis TOUT est valide avant la moindre ecriture : si un seul match est
-   * verrouille, rien n'est enregistre. Un enregistrement partiel serait
-   * incomprehensible pour l'utilisateur.
-   */
+  
   async savePredictions(
     userId: string,
     selections: PredictionSelection[],
