@@ -2,11 +2,7 @@ import { supabase } from "@/core/supabase/client";
 
 import { Prediction, PredictionInput } from "../types/prediction";
 import { IPredictionRepository } from "./IPredictionRepository";
-import {
-  PredictionRow,
-  toPrediction,
-  toPredictionRow,
-} from "../mappers/predictionMapper";
+import {  PredictionRow,  toPrediction,  toPredictionRow,} from "../mappers/predictionMapper";
 
 export class SupabasePredictionRepository implements IPredictionRepository {
   /**

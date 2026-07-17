@@ -10,4 +10,4 @@ export function useLogout() {
       queryClient.invalidateQueries({ queryKey: ["session"] });
     },
   });
-}
+} 
