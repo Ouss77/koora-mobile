@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import {    PredictionSelection,    predictionService,} from "../services/predictionService";
+import {
+  PredictionSelection,
+  predictionService,
+} from "../services/PredictionService";
 
 export function useSavePredictions(userId: string | undefined) {
   const queryClient = useQueryClient();

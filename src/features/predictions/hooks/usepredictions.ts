@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { predictionService } from "../services/predictionService";
+import { predictionService } from "../services/PredictionService";
 
 /**
  * Options partagees par usePredictions et usePrediction.
