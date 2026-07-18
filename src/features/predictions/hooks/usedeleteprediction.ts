@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { predictionService } from "../services/predictionService";
+import { predictionService } from "../services/PredictionService";
 
 /**
  * Aucun ecran du CdC n'appelle ceci pour l'instant (cf. discussion Issue 1).

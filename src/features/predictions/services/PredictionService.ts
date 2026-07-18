@@ -13,9 +13,16 @@ import {
   PredictionLockedError,
 } from "../errors/prediction.errors";
 
-export interface PredictionSelection { 
+export interface PredictionSelection {
   matchId: string;
   prediction: MatchResult;
+}
+
+export function isMatchOpen(match: Match): boolean {
+  return (
+    match.status !== MatchStatus.FINISHED &&
+    new Date() < new Date(match.kickoffAt)
+  );
 }
 
 export class PredictionService {
@@ -32,11 +39,13 @@ export class PredictionService {
     if (match.status === MatchStatus.FINISHED) {
       throw new MatchFinishedError(matchId);
     }
- 
-    if (new Date() >= new Date(match.kickoffAt)) {
+
+    if (!isMatchOpen(match)) {
       throw new PredictionLockedError(matchId);
     }
   }
+
+  
 
   async getUserPredictions(userId: string): Promise<Prediction[]> {
     return this.predictionRepository.listByUser(userId);
@@ -86,7 +95,6 @@ export class PredictionService {
     return this.predictionRepository.deleteByMatch(userId, matchId);
   }
 }
-
 export const predictionService = new PredictionService(
   new SupabasePredictionRepository(),
   new SupabaseMatchRepository(),
