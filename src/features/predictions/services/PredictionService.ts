@@ -7,22 +7,22 @@ import { MatchStatus } from "@/features/matches/types/match-status";
 import { IPredictionRepository } from "../repositories/IPredictionRepository";
 import { SupabasePredictionRepository } from "../repositories/SupabasePredictionRepository";
 import { Prediction, PredictionInput } from "../types/prediction";
-import {
-  MatchFinishedError,
-  MatchNotFoundError,
-  PredictionLockedError,
-} from "../errors/prediction.errors";
+import {  MatchFinishedError,  MatchNotFoundError,  PredictionLockedError,} from "../errors/prediction.errors";
 
 export interface PredictionSelection {
   matchId: string;
   prediction: MatchResult;
 }
 
+function lockReason(match: Match): "finished" | "locked" | null {
+  if (match.status === MatchStatus.FINISHED) return "finished";
+  if (new Date() >= new Date(match.kickoffAt)) return "locked";
+  return null;
+}
+
+// Pour l'écran : ouvert ou pas ? (un simple oui/non)
 export function isMatchOpen(match: Match): boolean {
-  return (
-    match.status !== MatchStatus.FINISHED &&
-    new Date() < new Date(match.kickoffAt)
-  );
+  return lockReason(match) === null;
 }
 
 export class PredictionService {
@@ -32,20 +32,12 @@ export class PredictionService {
   ) {}
 
   private assertOpen(match: Match | undefined, matchId: string): void {
-    if (!match) {
-      throw new MatchNotFoundError(matchId);
-    }
+    if (!match) throw new MatchNotFoundError(matchId);
 
-    if (match.status === MatchStatus.FINISHED) {
-      throw new MatchFinishedError(matchId);
-    }
-
-    if (!isMatchOpen(match)) {
-      throw new PredictionLockedError(matchId);
-    }
+    const reason = lockReason(match);
+    if (reason === "finished") throw new MatchFinishedError(matchId);
+    if (reason === "locked") throw new PredictionLockedError(matchId);
   }
-
-  
 
   async getUserPredictions(userId: string): Promise<Prediction[]> {
     return this.predictionRepository.listByUser(userId);
@@ -95,6 +87,7 @@ export class PredictionService {
     return this.predictionRepository.deleteByMatch(userId, matchId);
   }
 }
+
 export const predictionService = new PredictionService(
   new SupabasePredictionRepository(),
   new SupabaseMatchRepository(),
