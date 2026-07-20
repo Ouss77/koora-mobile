@@ -1,4 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "PowerShell(winget install --id GitHub.cli -e --accept-source-agreements --accept-package-agreements)",
+      "PowerShell($paths = @\\(\"$env:ProgramFiles\\\\GitHub CLI\\\\gh.exe\",\"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\\\\gh.exe\"\\); foreach\\($p in $paths\\){ if\\(Test-Path $p\\){ Write-Output \"FOUND: $p\" } }; Write-Output \"---\"; Get-Command gh -ErrorAction SilentlyContinue)",
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status 2>&1)",
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" repo view Ouss77/koora-mobile --json name,url,defaultBranchRef 2>&1)",
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" label list --repo Ouss77/koora-mobile 2>&1)"
+    ]
+  },
   "enabledPlugins": {
     "expo@claude-plugins-official": true
   }
