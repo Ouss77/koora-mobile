@@ -34,7 +34,7 @@ export function PredictionList({
 
       {matches.length === 0 ? (
         <View className="items-center rounded-lg border border-zinc-200 bg-white px-6 py-12">
-          <Text className="text-center text-base font-semibold text-zinc-800">
+          <Text className="text-center text-base font-poppins-semibold text-zinc-800">
             Aucun match ouvert aux pronostics
           </Text>
           <Text className="mt-2 text-center text-sm text-zinc-500">

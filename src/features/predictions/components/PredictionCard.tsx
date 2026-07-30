@@ -26,16 +26,16 @@ export function PredictionCard({ match, value, onChange }: Props) {
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
           <View className="h-7 w-7 items-center justify-center rounded-full bg-emerald-50">
-            <Text className="text-xs font-bold text-green-700">K</Text>
+            <Text className="text-xs font-poppins-bold text-green-700">K</Text>
           </View>
-          <Text className="text-xs font-bold uppercase text-zinc-600">
+          <Text className="text-xs font-poppins-bold uppercase text-zinc-600">
             Koora League
           </Text>
         </View>
 
         <View className="flex-row items-center gap-1 rounded-full bg-amber-50 px-3 py-1">
           <Clock3 size={14} color="#52525b" />
-          <Text className="text-[11px] font-bold uppercase text-amber-800">
+          <Text className="text-[11px] font-poppins-bold uppercase text-amber-800">
             {lockText}
           </Text>
         </View>
@@ -44,12 +44,12 @@ export function PredictionCard({ match, value, onChange }: Props) {
       <View className="flex-row items-center justify-between">
         <View className="min-w-0 flex-1 items-center">
           <View className="h-12 w-12 items-center justify-center rounded-full bg-sky-50">
-            <Text className="text-lg font-black text-green-700">
+            <Text className="text-lg font-poppins-black text-green-700">
               {team1Initial}
             </Text>
           </View>
           <Text
-            className="mt-2 text-center text-sm font-semibold text-zinc-900"
+            className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900"
             numberOfLines={1}
           >
             {match.team1}
@@ -57,23 +57,23 @@ export function PredictionCard({ match, value, onChange }: Props) {
         </View>
 
         <View className="w-20 items-center">
-          <Text className="text-2xl font-black text-zinc-200">VS</Text>
-          <Text className="mt-1 text-sm font-bold text-zinc-600">
+          <Text className="text-2xl font-poppins-black text-zinc-200">VS</Text>
+          <Text className="mt-1 text-sm font-poppins-bold text-zinc-600">
             {format(kickoff, "HH:mm")}
           </Text>
-          <Text className="text-[11px] font-medium text-zinc-400">
+          <Text className="text-[11px] font-poppins-medium text-zinc-400">
             {format(kickoff, "dd/MM")}
           </Text>
         </View>
 
         <View className="min-w-0 flex-1 items-center">
           <View className="h-12 w-12 items-center justify-center rounded-full bg-sky-50">
-            <Text className="text-lg font-black text-green-700">
+            <Text className="text-lg font-poppins-black text-green-700">
               {team2Initial}
             </Text>
           </View>
           <Text
-            className="mt-2 text-center text-sm font-semibold text-zinc-900"
+            className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900"
             numberOfLines={1}
           >
             {match.team2}

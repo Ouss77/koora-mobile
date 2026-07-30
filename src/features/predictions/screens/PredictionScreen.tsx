@@ -126,34 +126,34 @@ export function PredictionScreen() {
 
         <View className="flex-row items-center gap-2">
           <Trophy size={17} color="#fde68a" />
-          <Text className="text-xs font-black uppercase text-green-100">
+          <Text className="text-xs font-poppins-black uppercase text-green-100">
             Challenge du jour
           </Text>
         </View>
-        <Text className="mt-2 text-2xl font-black text-white">
+        <Text className="mt-2 text-2xl font-poppins-black text-white">
           Choisis tes vainqueurs
         </Text>
         <View className="mt-3 flex-row gap-2">
           <View className="rounded-lg bg-green-700 px-3 py-2">
-            <Text className="text-xs font-semibold text-green-100">
+            <Text className="text-xs font-poppins-semibold text-green-100">
               Jackpot
             </Text>
-            <Text className="text-base font-black text-white">2,500 pts</Text>
+            <Text className="text-base font-poppins-black text-white">2,500 pts</Text>
           </View>
           <View className="rounded-lg bg-green-700 px-3 py-2">
-            <Text className="text-xs font-semibold text-green-100">
+            <Text className="text-xs font-poppins-semibold text-green-100">
               Objectif
             </Text>
-            <Text className="text-base font-black text-white">5 picks</Text>
+            <Text className="text-base font-poppins-black text-white">5 picks</Text>
           </View>
         </View>
       </View>
 
       <View className="pb-1">
-        <Text className="text-2xl font-black text-zinc-950">
+        <Text className="text-2xl font-poppins-black text-zinc-950">
           Matchs disponibles
         </Text>
-        <Text className="mt-1 text-sm font-medium text-zinc-500">
+        <Text className="mt-1 text-sm font-poppins-medium text-zinc-500">
           {"Les pronostics restent modifiables avant le coup d'envoi."}
         </Text>
       </View>
@@ -165,7 +165,7 @@ export function PredictionScreen() {
       <SafeAreaView className="flex-1 bg-zinc-50">
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#047857" />
-          <Text className="mt-3 text-sm font-semibold text-zinc-500">
+          <Text className="mt-3 text-sm font-poppins-semibold text-zinc-500">
             Chargement des pronostics...
           </Text>
         </View>
@@ -177,12 +177,12 @@ export function PredictionScreen() {
     <SafeAreaView className="flex-1 bg-zinc-50" style={{ flex: 1 }}>
       <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white px-4 py-3">
         <View className="h-11 w-11 items-center justify-center rounded-full border border-green-600 bg-green-50">
-          <Text className="text-base font-black text-green-800">{avatarLabel}</Text>
+          <Text className="text-base font-poppins-black text-green-800">{avatarLabel}</Text>
         </View>
 
         <View className="items-center">
-          <Text className="text-xl font-black text-green-700">KOORA</Text>
-          <Text className="text-[11px] font-semibold uppercase text-zinc-400">
+          <Text className="text-xl font-poppins-black text-green-700">KOORA</Text>
+          <Text className="text-[11px] font-poppins-semibold uppercase text-zinc-400">
             Predictions
           </Text>
         </View>
@@ -223,7 +223,7 @@ export function PredictionScreen() {
             )}
             <View className="min-w-0 flex-1">
               <Text
-                className={`text-sm font-black ${
+                className={`text-sm font-poppins-black ${
                   visibleNotice.type === "success"
                     ? "text-green-800"
                     : "text-red-700"
@@ -256,7 +256,7 @@ export function PredictionScreen() {
             <ActivityIndicator color="#ffffff" />
           ) : (
             <>
-              <Text className="text-lg font-black text-white">
+              <Text className="text-lg font-poppins-black text-white">
                 {changes.length > 0
                   ? `Enregistrer ${changes.length} choix`
                   : "Aucun changement"}
