@@ -33,7 +33,7 @@ export function PredictionSelector({ team1, team2, value, onChange }: Props) {
             onPress={() => onChange(option.value)}
           >
             <Text
-                className={`text-lg font-semibold ${
+                className={`text-lg font-poppins-semibold ${
                 isSelected ? "text-white" : "text-zinc-800"
               }`}
               numberOfLines={1}
@@ -41,7 +41,7 @@ export function PredictionSelector({ team1, team2, value, onChange }: Props) {
               {option.label}
             </Text>
             <Text
-              className={`mt-1 text-center text-[11px] font-semibold uppercase ${
+              className={`mt-1 text-center text-[11px] font-poppins-semibold uppercase ${
                 isSelected ? "text-green-100" : "text-zinc-500"
               }`}
               numberOfLines={1}
