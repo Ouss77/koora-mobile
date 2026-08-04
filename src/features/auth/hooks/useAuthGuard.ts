@@ -2,7 +2,7 @@ import { useSession } from "./useSession";
 
 export function useAuthDestination() {
   const { data: session, isLoading } = useSession();
-  const destination = session ? "/home" : "/login";
+  const destination = session ? "/" : "/login";
   return { isLoading, destination } as const;
 }
 
@@ -13,7 +13,7 @@ export function useAuthGuard(mode: GuardMode) {
 
   const shouldRedirect =
     !isLoading &&
-    (mode === "requireAuth" ? destination !== "/home" : destination !== "/login");
+    (mode === "requireAuth" ? destination !== "/" : destination !== "/login");
 
   return { isLoading, shouldRedirect, redirectTo: destination };
 }
