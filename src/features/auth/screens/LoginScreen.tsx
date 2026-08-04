@@ -23,7 +23,7 @@ export default function LoginScreen() {
   });
 
   const onSubmit = (data: LoginFormData) => {
-    mutate(data, { onSuccess: () => router.replace("/home") });
+    mutate(data, { onSuccess: () => router.replace("/") });
   };
 
   return (

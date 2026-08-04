@@ -5,7 +5,20 @@
       "PowerShell($paths = @\\(\"$env:ProgramFiles\\\\GitHub CLI\\\\gh.exe\",\"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\\\\gh.exe\"\\); foreach\\($p in $paths\\){ if\\(Test-Path $p\\){ Write-Output \"FOUND: $p\" } }; Write-Output \"---\"; Get-Command gh -ErrorAction SilentlyContinue)",
       "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status 2>&1)",
       "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" repo view Ouss77/koora-mobile --json name,url,defaultBranchRef 2>&1)",
-      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" label list --repo Ouss77/koora-mobile 2>&1)"
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" label list --repo Ouss77/koora-mobile 2>&1)",
+      "PowerShell(gh --version)",
+      "PowerShell(gh auth status)",
+      "Bash(npx expo *)",
+      "Bash(node -e \"const cli=require\\('C:/Users/sousou/Desktop/koora-mobile/node_modules/expo/package.json'\\); console.log\\(cli.version\\)\")",
+      "Bash(timeout 40 npx expo start --web --no-dev --minify)",
+      "Read(//tmp/**)",
+      "Read(//c/Users/sousou/Desktop/koora-mobile/**)",
+      "Bash(powershell -c \"\\(Get-Item .expo/types/router.d.ts\\).LastWriteTime\")",
+      "Bash(xargs grep -ln \"index\")",
+      "Bash(node \"C:\\\\Users\\\\sousou\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-sousou-Desktop-koora-mobile\\\\cbd10e6c-0a02-4fc4-a551-c44c7dfa7aed\\\\scratchpad\\\\gen-types.js\")",
+      "Bash(grep -o \"'/\\(tabs\\)'.\\\\{0,20\\\\}\" .expo/types/router.d.ts)",
+      "Bash(grep -oE '`/`[^a-zA-Z]|`/login`' .expo/types/router.d.ts)",
+      "Bash(node -e ' *)"
     ]
   },
   "enabledPlugins": {
