@@ -4,7 +4,7 @@ import { useProfile } from '../hooks/useProfile';
 import { useProfileStats } from '../hooks/useProfileStats';
 import { ProfileHeader } from '../components/ProfileHeader';
 import { ProfileStatsSection } from '../components/ProfileStatsSection';
-import { ProfileSettingsList } from '../components/ProfileSettingsList';
+import { ProfileMenu } from '../components/ProfileMenu';
 
 export default function ProfileScreen() {
   const profileQuery = useProfile();
@@ -72,6 +72,7 @@ export default function ProfileScreen() {
       </View>
 
       <View className="flex-1" style={{ flex: 1 }}>
+        <ProfileMenu />
         <ScrollView
           className="flex-1"
           style={{ flex: 1 }}
@@ -80,7 +81,6 @@ export default function ProfileScreen() {
         >
           <ProfileHeader profile={profile} />
           <ProfileStatsSection stats={statsQuery.data} isLoading={statsQuery.isLoading} />
-          <ProfileSettingsList />
         </ScrollView>
       </View>
     </SafeAreaView>
