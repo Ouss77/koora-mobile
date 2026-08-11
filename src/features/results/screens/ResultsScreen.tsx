@@ -12,34 +12,10 @@ import { Bell, Trophy, CheckCircle2, Percent } from "lucide-react-native";
 import { useSession } from "@/features/auth/hooks/useSession";
 import { useProfileStats } from "@/features/profile/hooks/useProfileStats";
 import type { ProfileStats } from "@/features/profile/types/profile";
+import { StatCard } from "@/shared/ui/StatCard";
 
 import { useMyResults } from "../hooks/useMyResults";
 import { ResultCard } from "../components/ResultCard";
-
-function SummaryTile({
-  Icon,
-  label,
-  value,
-}: {
-  Icon: typeof Trophy;
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <View className="flex-1 gap-2 rounded-2xl border border-zinc-100 bg-white px-3 py-4">
-      <View className="h-8 w-8 items-center justify-center rounded-lg bg-green-50">
-        <Icon size={16} color="#047857" strokeWidth={2.5} />
-      </View>
-      <Text className="font-poppins-black text-xl text-zinc-950">{value}</Text>
-      <Text
-        className="font-poppins-semibold text-[11px] uppercase tracking-wide text-zinc-400"
-        numberOfLines={1}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-}
 
 function SummarySkeleton() {
   return (
@@ -64,13 +40,13 @@ function ResultsSummary({ stats }: { stats: ProfileStats | undefined }) {
 
   return (
     <View className="flex-row gap-3">
-      <SummaryTile Icon={Trophy} label="Points" value={stats.points} />
-      <SummaryTile
+      <StatCard Icon={Trophy} label="Points" value={stats.points} />
+      <StatCard
         Icon={CheckCircle2}
         label="Corrects"
         value={stats.correctPredictions}
       />
-      <SummaryTile Icon={Percent} label="Réussite" value={accuracyLabel} />
+      <StatCard Icon={Percent} label="Réussite" value={accuracyLabel} />
     </View>
   );
 }
