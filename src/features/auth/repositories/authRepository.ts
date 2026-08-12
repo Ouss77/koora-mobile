@@ -1,5 +1,5 @@
 import { supabase } from "@/core/supabase/client";
-
+import type { AppSession } from "../types/session.types";
 export const authRepository = {
 async signUp(username: string, email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({
@@ -36,9 +36,30 @@ async signUp(username: string, email: string, password: string) {
     if (error) throw error;
   },
 
-  async getSession() {
+async getSession() {
+  try {
     const { data, error } = await supabase.auth.getSession();
     if (error) throw error;
-    return data.session;
-  },
+    
+    const session = data.session;
+    if (!session?.user?.id) return null;
+
+    // Enrichir avec le rôle
+    const { data: userProfile } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    return {
+      ...session,
+      user: {
+        ...session.user,
+        role: (userProfile?.role as "user" | "admin") || "user",
+      },
+    };
+  } catch {
+    throw new Error("Impossible de récupérer la session.");
+  }
+},
 };
