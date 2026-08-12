@@ -81,7 +81,7 @@ function TabLabel({
 export default function TabsLayout() {
   const { isLoading, shouldRedirect, redirectTo } = useAuthGuard("requireAuth");
   const { data: session } = useSession();
-  const isAdmin = session?.user?.user_metadata?.role === "admin";
+  const isAdmin = session?.user?.role === "admin";
   const insets = useSafeAreaInsets();
 
   if (isLoading) {
