@@ -11,8 +11,11 @@ import {
 } from "@expo-google-fonts/poppins";
 import "../../global.css";
 import { AppQueryClientProvider } from "@/core/providers/query-client-provider";
+import { adminService } from "@/features/admin/services/adminService";
+import { supabase } from "@/core/supabase/client";
 
 SplashScreen.preventAutoHideAsync();
+
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({

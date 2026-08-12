@@ -1,7 +1,5 @@
 import {
-  View,
-  Text,
-  FlatList,
+  View,  Text,  FlatList,
   ActivityIndicator,
   Pressable,
   SafeAreaView,
