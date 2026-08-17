@@ -1,5 +1,3 @@
-import ComingSoon from "@/shared/components/ComingSoon";
+import { SetResultScreen } from "@/features/admin/screens/SetResultScreen";
 
-export default function SetResultScreen() {
-  return <ComingSoon label="Saisie de résultat bientôt disponible" />;
-}
+export default SetResultScreen;
