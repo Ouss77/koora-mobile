@@ -81,7 +81,15 @@ export function SetResultScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-50" style={{ flex: 1 }}>
-      <View className="border-b border-zinc-200 bg-white px-4 py-3">
+      <View className="flex-row items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Retour à la liste des matchs"
+          onPress={() => router.replace("/admin/match-management")}
+          className="rounded-lg bg-zinc-100 px-3 py-2"
+        >
+          <Text className="font-poppins-bold text-sm text-zinc-800">← Matchs</Text>
+        </Pressable>
         <Text className="font-poppins-black text-lg text-zinc-900">
           {match.result ? "Corriger le résultat" : "Enregistrer le résultat"}
         </Text>

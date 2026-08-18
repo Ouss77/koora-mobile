@@ -66,33 +66,31 @@ export function AdminMatchManagement() {
 
   const handleDelete = (match: AdminMatch) => {
     if (!adminService.canDeleteMatch(match)) {
-      Alert.alert(
+      showAlert(
         "Suppression impossible",
         `Ce match a ${match.predictionsCount} pronostic(s) et ne peut pas être supprimé.`,
       );
       return;
     }
-    Alert.alert("Supprimer ce match ?", "Cette action est irréversible.", [
-      { text: "Annuler", onPress: () => {} },
-      {
-        text: "Supprimer",
-        onPress: async () => {
-          setDeleting(match.id);
-          try {
-            await adminService.deleteMatch(match);
-            refetch();
-          } catch (err) {
-            Alert.alert(
-              "Erreur",
-              err instanceof Error ? err.message : "Impossible de supprimer le match.",
-            );
-          } finally {
-            setDeleting(null);
-          }
-        },
-        style: "destructive",
+    showConfirmAlert(
+      "Supprimer ce match ?",
+      "Cette action est irréversible.",
+      "Supprimer",
+      async () => {
+        setDeleting(match.id);
+        try {
+          await adminService.deleteMatch(match);
+          await refetch();
+        } catch (err) {
+          showAlert(
+            "Erreur",
+            err instanceof Error ? err.message : "Impossible de supprimer le match.",
+          );
+        } finally {
+          setDeleting(null);
+        }
       },
-    ]);
+    );
   };
 
   const handleSetResult = (match: AdminMatch) => {
@@ -145,6 +143,17 @@ export function AdminMatchManagement() {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-50" style={{ flex: 1 }}>
+      <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white px-4 py-3">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Retour au tableau de bord"
+          onPress={() => router.replace("/admin")}
+          className="rounded-lg bg-zinc-100 px-3 py-2"
+        >
+          <Text className="font-poppins-bold text-sm text-zinc-800">← Tableau de bord</Text>
+        </Pressable>
+        <Text className="font-poppins-black text-lg text-zinc-900">Matchs</Text>
+      </View>
       <View className="flex-1" style={{ flex: 1 }}>
         {matchList.length === 0 ? (
           <View className="flex-1 items-center justify-center px-6">
