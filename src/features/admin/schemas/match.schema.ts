@@ -82,7 +82,11 @@ export const matchFormSchema = z
     path: ["dateStr"],
   });
 
-export type MatchFormValues = z.infer<typeof matchFormSchema>;
+/** Values managed by the text inputs, before schema transformations. */
+export type MatchFormInput = z.input<typeof matchFormSchema>;
+
+/** Validated values returned to the submit handler, after transformations. */
+export type MatchFormValues = z.output<typeof matchFormSchema>;
 
 /**
  * Format Date → DD/MM/YYYY pour l'input

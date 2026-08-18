@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 
 import {
   matchFormSchema,
+  type MatchFormInput,
   type MatchFormValues,
   formatDateToDDMMYYYY,
   formatTimeToHHmm,
@@ -34,7 +35,7 @@ export function MatchForm(props: MatchFormProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<MatchFormValues>({
+  } = useForm<MatchFormInput, any, MatchFormValues>({
     resolver: zodResolver(matchFormSchema),
     defaultValues:
       isEdit && "match" in props
