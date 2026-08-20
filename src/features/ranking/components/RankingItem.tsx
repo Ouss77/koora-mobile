@@ -8,7 +8,15 @@ interface RankingItemProps {
   isMe?: boolean;
 }
 
+const medalColors: Record<number, string> = {
+  1: "#f59e0b",
+  2: "#94a3b8",
+  3: "#c2410c",
+};
+
 function RankingItemComponent({ user, isMe = false }: RankingItemProps) {
+  const medalColor = medalColors[user.rank];
+
   return (
     <View
       className={`flex-row items-center gap-3 rounded-xl border px-4 py-3 ${
@@ -24,9 +32,28 @@ function RankingItemComponent({ user, isMe = false }: RankingItemProps) {
         shadowOffset: { width: 0, height: 1 },
       }}
     >
-      <Text className="w-8 font-poppins-bold text-sm text-zinc-400">
-        #{user.rank}
-      </Text>
+      <View className="w-12 flex-row items-center gap-1">
+        <Text
+          className={`font-poppins-bold text-sm ${
+            user.rank === 1
+              ? "text-amber-600"
+              : user.rank === 2
+                ? "text-slate-500"
+                : user.rank === 3
+                  ? "text-orange-700"
+                  : "text-zinc-400"
+          }`}
+        >
+          #{user.rank}
+        </Text>
+        {medalColor ? (
+          <View
+            accessibilityLabel={`Médaille rang ${user.rank}`}
+            className="h-3 w-3 rounded-full"
+            style={{ backgroundColor: medalColor }}
+          />
+        ) : null}
+      </View>
 
       <View
         className={`h-11 w-11 items-center justify-center rounded-full ${

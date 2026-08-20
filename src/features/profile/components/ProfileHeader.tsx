@@ -10,7 +10,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
   return (
     <View
-      className="items-center gap-3 rounded-3xl border border-zinc-100 bg-white px-6 pb-6 pt-8"
+      className="items-center gap-3 rounded-3xl border border-zinc-100 bg-white px-4 pb-4 pt-4"
       style={{
         elevation: 2,
         shadowColor: '#0f172a',

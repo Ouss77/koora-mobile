@@ -10,6 +10,7 @@ import {
 import { Bell, Trophy, CheckCircle2, Percent } from "lucide-react-native";
 
 import { useSession } from "@/features/auth/hooks/useSession";
+import { BackgroundImage } from "@/shared/ui/BackgroundImage";
 import { useProfileStats } from "@/features/profile/hooks/useProfileStats";
 import type { ProfileStats } from "@/features/profile/types/profile";
 import { StatCard } from "@/shared/ui/StatCard";
@@ -82,43 +83,48 @@ export function ResultsScreen() {
 
   if (resultsQuery.isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-50">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#047857" />
-          <Text className="mt-3 font-poppins-semibold text-sm text-zinc-500">
-            Chargement des résultats...
-          </Text>
-        </View>
-      </SafeAreaView>
+      <BackgroundImage overlayClassName="bg-slate-950/70">
+        <SafeAreaView className="flex-1">
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color="#047857" />
+            <Text className="mt-3 font-poppins-semibold text-sm text-zinc-100">
+              Chargement des résultats...
+            </Text>
+          </View>
+        </SafeAreaView>
+      </BackgroundImage>
     );
   }
 
   if (resultsQuery.isError) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-50">
-        <View className="flex-1 items-center justify-center px-6">
-          <Text className="mb-4 text-center font-poppins-semibold text-base text-zinc-800">
-            Impossible de charger tes résultats.
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => resultsQuery.refetch()}
-            className="rounded-lg bg-green-700 px-5 py-3"
-          >
-            <Text className="font-poppins-black text-sm text-white">
-              Réessayer
+      <BackgroundImage overlayClassName="bg-slate-950/70">
+        <SafeAreaView className="flex-1">
+          <View className="flex-1 items-center justify-center px-6">
+            <Text className="mb-4 text-center font-poppins-semibold text-base text-zinc-100">
+              Impossible de charger tes résultats.
             </Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => resultsQuery.refetch()}
+              className="rounded-lg bg-green-700 px-5 py-3"
+            >
+              <Text className="font-poppins-black text-sm text-white">
+                Réessayer
+              </Text>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </BackgroundImage>
     );
   }
 
   const results = resultsQuery.data ?? [];
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-50" style={{ flex: 1 }}>
-      <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white px-4 py-3">
+    <BackgroundImage overlayClassName="bg-slate-950/70">
+      <SafeAreaView className="flex-1" style={{ flex: 1 }}>
+        <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white px-4 py-3">
         <View className="h-11 w-11 items-center justify-center rounded-full border border-green-600 bg-green-50">
           <Text className="font-poppins-black text-base text-green-800">
             {avatarLabel}
@@ -137,9 +143,9 @@ export function ResultsScreen() {
         <View className="h-11 w-11 items-center justify-center rounded-full bg-zinc-100">
           <Bell size={22} color="#047857" strokeWidth={2.5} />
         </View>
-      </View>
+        </View>
 
-      <View className="flex-1" style={{ flex: 1 }}>
+        <View className="flex-1" style={{ flex: 1 }}>
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
@@ -161,7 +167,8 @@ export function ResultsScreen() {
             />
           }
         />
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </BackgroundImage>
   );
 }

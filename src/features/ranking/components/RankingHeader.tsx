@@ -8,7 +8,14 @@ export function RankingHeader() {
         <Text className="font-poppins-black text-xs uppercase tracking-wide text-green-700">
           Classement général
         </Text>
-        <Text className="mt-1 font-poppins-black text-2xl text-zinc-950">
+        <Text
+          className="mt-1 font-poppins-black text-2xl text-zinc-100"
+          style={{
+            textShadowColor: "rgba(0,0,0,0.5)",
+            textShadowRadius: 4,
+            textShadowOffset: { width: 0, height: 1 },
+          }}
+        >
           Classement
         </Text>
       </View>

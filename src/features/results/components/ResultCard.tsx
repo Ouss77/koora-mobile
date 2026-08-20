@@ -32,36 +32,34 @@ function ResultCardComponent({ result }: ResultCardProps) {
 
   return (
     <View
-      className={`rounded-xl border bg-white p-4 ${
+      className={`rounded-xl border bg-white p-3 ${
         isCorrect ? "border-green-200" : "border-zinc-200"
-      }`}
+      }`
+      }
     >
-      {/* En-tête : équipes + date */}
-      <View className="flex-row items-start justify-between gap-3">
-        <View className="min-w-0 flex-1">
-          <View className="flex-row items-start justify-between gap-2">
-            <View className="min-w-0 flex-1 items-center">
-              <TeamLogo logoUrl={match.team1Logo} teamName={match.team1} size="lg" />
-              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+      {/* Ligne 1 : logos sm + noms + badge points (compact) */}
+      <View className="flex-row items-center justify-between gap-2">
+        <View className="flex-row items-center gap-3 min-w-0 flex-1">
+          <View className="flex-row items-center gap-2 min-w-0">
+            <TeamLogo logoUrl={match.team1Logo} teamName={match.team1} size="sm" />
+            <Text className="font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
               {match.team1}
-              </Text>
-            </View>
-            <Text className="mt-4 font-poppins-semibold text-sm text-zinc-400">vs</Text>
-            <View className="min-w-0 flex-1 items-center">
-              <TeamLogo logoUrl={match.team2Logo} teamName={match.team2} size="lg" />
-              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
-              {match.team2}
-              </Text>
-            </View>
+            </Text>
           </View>
-          <Text className="mt-0.5 font-poppins-semibold text-[11px] uppercase text-zinc-400">
-            {format(match.kickoffAt, "EEE d MMM · HH:mm", { locale: fr })}
-          </Text>
+
+          <Text className="font-poppins-semibold text-sm text-zinc-400">· vs ·</Text>
+
+          <View className="flex-row items-center gap-2 min-w-0">
+            <TeamLogo logoUrl={match.team2Logo} teamName={match.team2} size="sm" />
+            <Text className="font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+              {match.team2}
+            </Text>
+          </View>
         </View>
 
         {/* Badge points */}
         <View
-          className={`flex-row items-center gap-1 rounded-full px-3 py-1.5 ${
+          className={`flex-row items-center gap-1 rounded-full px-3 py-1 ${
             isCorrect ? "bg-green-700" : "bg-zinc-100"
           }`}
         >
@@ -80,33 +78,15 @@ function ResultCardComponent({ result }: ResultCardProps) {
         </View>
       </View>
 
-      {/* Pronostic vs Résultat */}
-      <View className="mt-3 flex-row gap-3">
-        <View className="min-w-0 flex-1 rounded-lg bg-zinc-50 px-3 py-2">
-          <Text className="font-poppins-bold text-[10px] uppercase text-zinc-400">
-            Ton pronostic
-          </Text>
-          <Text
-            className={`font-poppins-black text-sm ${
-              isCorrect ? "text-green-700" : "text-red-600"
-            }`}
-            numberOfLines={1}
-          >
-            {resultLabel(prediction, match.team1, match.team2)}
-          </Text>
-        </View>
+      {/* Ligne 2 : Pronostic et Résultat côte à côte, compacte */}
+      <View className="mt-2 flex-row items-center justify-between gap-2">
+        <Text className="min-w-0 flex-1 font-poppins-semibold text-xs text-zinc-400" numberOfLines={1}>
+          Pronostic: <Text className={`font-poppins-black text-xs ${isCorrect ? 'text-green-700' : 'text-red-600'}`}>{resultLabel(prediction, match.team1, match.team2)}</Text>
+        </Text>
 
-        <View className="min-w-0 flex-1 rounded-lg bg-zinc-50 px-3 py-2">
-          <Text className="font-poppins-bold text-[10px] uppercase text-zinc-400">
-            Résultat
-          </Text>
-          <Text
-            className="font-poppins-black text-sm text-zinc-900"
-            numberOfLines={1}
-          >
-            {resultLabel(actualResult, match.team1, match.team2)}
-          </Text>
-        </View>
+        <Text className="min-w-0 flex-1 text-right font-poppins-black text-xs text-zinc-900" numberOfLines={1}>
+          Résultat: <Text className="font-poppins-black text-xs text-zinc-900">{resultLabel(actualResult, match.team1, match.team2)}</Text>
+        </Text>
       </View>
     </View>
   );

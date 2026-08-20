@@ -1,51 +1,20 @@
-import { View, Text, Pressable, Alert, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
-import { LogOut } from 'lucide-react-native';
-import { useLogout } from '@/features/auth/hooks/useLogout';
+import { LogOut } from "lucide-react-native";
+import { Pressable, Text, View } from "react-native";
+import { useLogoutFlow } from "../hooks/useLogoutFlow";
 
 export function ProfileMenu() {
-  const router = useRouter();
-  const logout = useLogout();
-
-  function confirmLogout() {
-    // Alert.alert n'affiche pas de boutons interactifs sur react-native-web,
-    // donc les callbacks (dont handleLogout) ne se déclenchent jamais sur le web.
-    if (Platform.OS === 'web') {
-      if (window.confirm('Tu veux vraiment te déconnecter ?')) {
-        handleLogout();
-      }
-      return;
-    }
-
-    Alert.alert(
-      'Déconnexion',
-      'Tu veux vraiment te déconnecter ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Se déconnecter', style: 'destructive', onPress: handleLogout },
-      ],
-    );
-  }
-
-  async function handleLogout() {
-    try {
-      await logout.mutateAsync();
-      router.replace('/login');
-    } catch {
-      Alert.alert('Erreur', 'La déconnexion a échoué. Réessaie.');
-    }
-  }
+  const { confirmLogout, isPending } = useLogoutFlow();
 
   return (
-    <View className="px-6 py-4">
+    <View className="items-center mt-4">
       <Pressable
         onPress={confirmLogout}
-        disabled={logout.isPending}
-        className="flex-row items-center justify-center gap-2 rounded-2xl bg-red-50 px-5 py-4 active:opacity-70"
+        disabled={isPending}
+        className="flex-row items-center gap-2 rounded-full border border-red-200 px-4 py-2 active:opacity-70 bg-red-50/60"
       >
-        <LogOut size={18} color="#dc2626" strokeWidth={2.5} />
-        <Text className="font-poppins-bold text-base text-red-600">
-          {logout.isPending ? 'Déconnexion…' : 'Déconnexion'}
+        <LogOut size={16} color="#dc2626" strokeWidth={2.5} />
+        <Text className="font-poppins-semibold text-sm text-red-600">
+          {isPending ? "Déconnexion…" : "Se déconnecter"}
         </Text>
       </Pressable>
     </View>

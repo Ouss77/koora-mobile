@@ -7,11 +7,11 @@ import {
 import { Bell } from "lucide-react-native";
 
 import { useSession } from "@/features/auth/hooks/useSession";
+import { BackgroundImage } from "@/shared/ui/BackgroundImage";
 
 import { useRanking } from "../hooks/useRanking";
 import { RankingItem } from "../components/RankingItem";
 import { RankingHeader } from "../components/RankingHeader";
-import { RankingPodium } from "../components/RankingPodium";
 import { EmptyRanking } from "../components/EmptyRanking";
 
 export function RankingScreen() {
@@ -27,49 +27,52 @@ export function RankingScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-50">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#047857" />
-          <Text className="mt-3 font-poppins-semibold text-sm text-zinc-500">
-            Chargement du classement...
-          </Text>
-        </View>
-      </SafeAreaView>
+      <BackgroundImage overlayClassName="bg-slate-950/70">
+        <SafeAreaView className="flex-1">
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color="#047857" />
+            <Text className="mt-3 font-poppins-semibold text-sm text-white">
+              Chargement du classement...
+            </Text>
+          </View>
+        </SafeAreaView>
+      </BackgroundImage>
     );
   }
 
   if (isError) {
     return (
-      <SafeAreaView className="flex-1 bg-zinc-50">
-        <View className="flex-1 items-center justify-center px-6">
-          <Text className="mb-4 text-center font-poppins-semibold text-base text-zinc-800">
-            Impossible de charger le classement.
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => refetch()}
-            className="rounded-lg bg-green-700 px-5 py-3"
-          >
-            <Text className="font-poppins-black text-sm text-white">
-              Réessayer
+      <BackgroundImage overlayClassName="bg-slate-950/70">
+        <SafeAreaView className="flex-1">
+          <View className="flex-1 items-center justify-center px-6">
+            <Text className="mb-4 text-center font-poppins-semibold text-base text-white">
+              Impossible de charger le classement.
             </Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => refetch()}
+              className="rounded-lg bg-green-700 px-5 py-3"
+            >
+              <Text className="font-poppins-black text-sm text-white">
+                Réessayer
+              </Text>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </BackgroundImage>
     );
   }
 
   const ranking = data ?? [];
-  const topThree = ranking.slice(0, 3);
-  const rest = ranking.slice(3);
   const me = ranking.find((user) => user.id === userId);
   const myPercentile = me
     ? Math.max(1, Math.round((me.rank / ranking.length) * 100))
     : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-50" style={{ flex: 1 }}>
-      <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white px-4 py-3">
+    <BackgroundImage overlayClassName="bg-slate-950/70">
+      <SafeAreaView className="flex-1" style={{ flex: 1 }}>
+      <View className="flex-row items-center justify-between border-b border-zinc-200 bg-white/95 px-4 py-3">
         <View className="h-11 w-11 items-center justify-center rounded-full border border-green-600 bg-green-50">
           <Text className="font-poppins-black text-base text-green-800">
             {avatarLabel}
@@ -95,7 +98,7 @@ export function RankingScreen() {
           <EmptyRanking />
         ) : (
           <FlatList
-            data={rest}
+            data={ranking}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <RankingItem user={item} isMe={item.id === userId} />
@@ -104,7 +107,6 @@ export function RankingScreen() {
             ListHeaderComponent={
               <View className="px-4 pt-4">
                 <RankingHeader />
-                <RankingPodium topThree={topThree} />
               </View>
             }
             showsVerticalScrollIndicator={false}
@@ -114,7 +116,7 @@ export function RankingScreen() {
 
       {me && myPercentile !== null ? (
         <View
-          className="border-t border-zinc-200 bg-white px-4 pb-4 pt-3"
+          className="border-t border-zinc-200 bg-white/95 px-4 pb-4 pt-3"
           style={{ flexShrink: 0 }}
         >
           <View
@@ -163,6 +165,7 @@ export function RankingScreen() {
           </View>
         </View>
       ) : null}
-    </SafeAreaView>
+      </SafeAreaView>
+    </BackgroundImage>
   );
 }

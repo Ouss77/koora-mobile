@@ -1,21 +1,19 @@
-import { useEffect } from "react";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
+import { AppQueryClientProvider } from "@/core/providers/query-client-provider";
 import {
-  useFonts,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
   Poppins_800ExtraBold,
   Poppins_900Black,
+  useFonts,
 } from "@expo-google-fonts/poppins";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../../global.css";
-import { AppQueryClientProvider } from "@/core/providers/query-client-provider";
-import { adminService } from "@/features/admin/services/adminService";
-import { supabase } from "@/core/supabase/client";
 
 SplashScreen.preventAutoHideAsync();
-
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -37,8 +35,10 @@ export default function RootLayout() {
   }
 
   return (
-    <AppQueryClientProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </AppQueryClientProvider>
+    <SafeAreaProvider>
+      <AppQueryClientProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </AppQueryClientProvider>
+    </SafeAreaProvider>
   );
 }
