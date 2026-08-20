@@ -1,5 +1,5 @@
 // features/admin/screens/MatchForm.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, TextInput, Pressable, ActivityIndicator } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,8 @@ import {
   formatDateToDDMMYYYY,
   formatTimeToHHmm,
 } from "../schemas/match.schema";
+import { TeamAutocomplete } from "../components/TeamAutocomplete";
+import { type Team, useTeamSuggestions } from "../hooks/useTeamSuggestions";
 import type { AdminMatch } from "../types/admin.types";
 
 type MatchFormProps = {
@@ -30,9 +32,26 @@ export function MatchForm(props: MatchFormProps) {
   const isEdit = props.mode === "edit";
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [selectedTeam1, setSelectedTeam1] = useState<Team | null>(() =>
+    isEdit && "match" in props
+      ? { id: "", name: props.match.team1, logo_url: null, country: null, league: null }
+      : null,
+  );
+  const [selectedTeam2, setSelectedTeam2] = useState<Team | null>(() =>
+    isEdit && "match" in props
+      ? { id: "", name: props.match.team2, logo_url: null, country: null, league: null }
+      : null,
+  );
+  const { suggestions: initialTeam1Suggestions } = useTeamSuggestions(
+    isEdit && "match" in props ? props.match.team1 : "",
+  );
+  const { suggestions: initialTeam2Suggestions } = useTeamSuggestions(
+    isEdit && "match" in props ? props.match.team2 : "",
+  );
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<MatchFormInput, any, MatchFormValues>({
@@ -40,29 +59,57 @@ export function MatchForm(props: MatchFormProps) {
     defaultValues:
       isEdit && "match" in props
         ? {
-            team1: props.match.team1,
-            team2: props.match.team2,
+            team1_id: "",
+            team2_id: "",
             dateStr: formatDateToDDMMYYYY(props.match.kickoffAt),
             timeStr: formatTimeToHHmm(props.match.kickoffAt),
           }
         : {
-            team1: "",
-            team2: "",
+            team1_id: "",
+            team2_id: "",
             dateStr: "",
             timeStr: "",
           },
   });
 
+  useEffect(() => {
+    if (!isEdit || !("match" in props) || selectedTeam1?.id) return;
+    const team = initialTeam1Suggestions.find(
+      (item) => item.name.toLowerCase() === props.match.team1.toLowerCase(),
+    );
+    if (team) {
+      setSelectedTeam1(team);
+      setValue("team1_id", team.id, { shouldValidate: true });
+    }
+  }, [initialTeam1Suggestions, isEdit, props, selectedTeam1?.id, setValue]);
+
+  useEffect(() => {
+    if (!isEdit || !("match" in props) || selectedTeam2?.id) return;
+    const team = initialTeam2Suggestions.find(
+      (item) => item.name.toLowerCase() === props.match.team2.toLowerCase(),
+    );
+    if (team) {
+      setSelectedTeam2(team);
+      setValue("team2_id", team.id, { shouldValidate: true });
+    }
+  }, [initialTeam2Suggestions, isEdit, props, selectedTeam2?.id, setValue]);
+
   const onSubmit = async (data: MatchFormValues) => {
     setSubmitError(null);
+    if (!selectedTeam1 || !selectedTeam2 || !selectedTeam1.id || !selectedTeam2.id) {
+      setSubmitError("Sélectionne les deux équipes dans les suggestions.");
+      return;
+    }
     try {
       await props.onSubmit({
-        team1: data.team1,
-        team2: data.team2,
+        team1: selectedTeam1.name,
+        team2: selectedTeam2.name,
         kickoffAt: data.kickoffAt,
       });
       // Succès : formulaire vidé, confirmation affichée, l'utilisateur choisit la suite
       reset();
+      setSelectedTeam1(null);
+      setSelectedTeam2(null);
       setSuccessMessage(isEdit ? "Match modifié avec succès !" : "Match créé avec succès !");
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Une erreur s'est produite.");
@@ -94,42 +141,30 @@ export function MatchForm(props: MatchFormProps) {
       {/* Team 1 */}
       <View>
         <Text className="mb-2 font-poppins-bold text-sm text-zinc-700">Équipe 1</Text>
-        <Controller
-          control={control}
-          name="team1"
-          render={({ field: { value, onChange } }) => (
-            <TextInput
-              value={value}
-              onChangeText={onChange}
-              placeholder="Ex: Real Madrid"
-              className="rounded-lg border border-zinc-300 bg-white px-3 py-3 font-poppins-medium text-base text-zinc-900"
-              placeholderTextColor="#9CA3AF"
-            />
-          )}
+        <TeamAutocomplete
+          value={selectedTeam1}
+          onChange={(team) => {
+            setSelectedTeam1(team);
+            setValue("team1_id", team?.id ?? "", { shouldValidate: true });
+          }}
         />
-        {errors.team1 && (
-          <Text className="mt-1 font-poppins-medium text-xs text-red-600">{errors.team1.message}</Text>
+        {errors.team1_id && (
+          <Text className="mt-1 font-poppins-medium text-xs text-red-600">{errors.team1_id.message}</Text>
         )}
       </View>
 
       {/* Team 2 */}
       <View>
         <Text className="mb-2 font-poppins-bold text-sm text-zinc-700">Équipe 2</Text>
-        <Controller
-          control={control}
-          name="team2"
-          render={({ field: { value, onChange } }) => (
-            <TextInput
-              value={value}
-              onChangeText={onChange}
-              placeholder="Ex: Barcelona"
-              className="rounded-lg border border-zinc-300 bg-white px-3 py-3 font-poppins-medium text-base text-zinc-900"
-              placeholderTextColor="#9CA3AF"
-            />
-          )}
+        <TeamAutocomplete
+          value={selectedTeam2}
+          onChange={(team) => {
+            setSelectedTeam2(team);
+            setValue("team2_id", team?.id ?? "", { shouldValidate: true });
+          }}
         />
-        {errors.team2 && (
-          <Text className="mt-1 font-poppins-medium text-xs text-red-600">{errors.team2.message}</Text>
+        {errors.team2_id && (
+          <Text className="mt-1 font-poppins-medium text-xs text-red-600">{errors.team2_id.message}</Text>
         )}
       </View>
 
@@ -156,7 +191,7 @@ export function MatchForm(props: MatchFormProps) {
 
       {/* Time */}
       <View>
-        <Text className="mb-2 font-poppins-bold text-sm text-zinc-700">Heure du coup d'envoi</Text>
+        <Text className="mb-2 font-poppins-bold text-sm text-zinc-700">Heure du coup d&apos;envoi</Text>
         <Controller
           control={control}
           name="timeStr"

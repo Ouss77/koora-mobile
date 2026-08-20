@@ -26,6 +26,8 @@ export function mapRawRowToAdminMatch(row: RawAdminMatchRow): AdminMatch {
     id: row.id,
     team1: row.team1,
     team2: row.team2,
+    team1Logo: row.team1_logo ?? undefined,
+    team2Logo: row.team2_logo ?? undefined,
     kickoffAt,
     result: row.result,
     status: deriveMatchStatus(row.result, kickoffAt),
