@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 import type { MyResult, MatchResultValue } from "@/features/results/types/result.types";
+import { TeamLogo } from "@/shared/components/TeamLogo";
 
 type ResultCardProps = {
   result: MyResult;
@@ -38,16 +39,21 @@ function ResultCardComponent({ result }: ResultCardProps) {
       {/* En-tête : équipes + date */}
       <View className="flex-row items-start justify-between gap-3">
         <View className="min-w-0 flex-1">
-          <Text
-            className="font-poppins-black text-base text-zinc-900"
-            numberOfLines={1}
-          >
-            {match.team1}{" "}
-            <Text className="font-poppins-semibold text-sm text-zinc-400">
-              vs
-            </Text>{" "}
-            {match.team2}
-          </Text>
+          <View className="flex-row items-start justify-between gap-2">
+            <View className="min-w-0 flex-1 items-center">
+              <TeamLogo logoUrl={match.team1Logo} teamName={match.team1} size="lg" />
+              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+              {match.team1}
+              </Text>
+            </View>
+            <Text className="mt-4 font-poppins-semibold text-sm text-zinc-400">vs</Text>
+            <View className="min-w-0 flex-1 items-center">
+              <TeamLogo logoUrl={match.team2Logo} teamName={match.team2} size="lg" />
+              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+              {match.team2}
+              </Text>
+            </View>
+          </View>
           <Text className="mt-0.5 font-poppins-semibold text-[11px] uppercase text-zinc-400">
             {format(match.kickoffAt, "EEE d MMM · HH:mm", { locale: fr })}
           </Text>

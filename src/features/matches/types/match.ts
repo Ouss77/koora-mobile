@@ -8,6 +8,10 @@ export interface Match {
 
   team2: string;
 
+  team1Logo?: string;
+
+  team2Logo?: string;
+
   kickoffAt: string;
 
   status: MatchStatus;

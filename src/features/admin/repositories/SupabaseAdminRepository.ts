@@ -20,7 +20,24 @@ export class SupabaseAdminRepository implements IAdminRepository {
     if (error) {
       throw new Error(`Erreur lors du chargement des matchs : ${error.message}`);
     }
-    return (data ?? []) as unknown as RawAdminMatchRow[];
+    const rows = (data ?? []) as unknown as RawAdminMatchRow[];
+    const teamNames = [...new Set(rows.flatMap((match) => [match.team1, match.team2]))];
+
+    if (teamNames.length === 0) return rows;
+
+    const { data: teams } = await supabase
+      .from("teams")
+      .select("name, logo_url")
+      .in("name", teamNames);
+    const logosByName = new Map(
+      (teams ?? []).map((team) => [team.name.toLowerCase(), team.logo_url as string | null]),
+    );
+
+    return rows.map((match) => ({
+      ...match,
+      team1_logo: logosByName.get(match.team1.toLowerCase()) ?? null,
+      team2_logo: logosByName.get(match.team2.toLowerCase()) ?? null,
+    }));
   }
 
   async createMatch(payload: MatchPayload): Promise<void> {

@@ -8,6 +8,8 @@ export function mapRawRowToMyResult(row: RawResultRow): MyResult {
       id: row.matches.id,
       team1: row.matches.team1,
       team2: row.matches.team2,
+      team1Logo: row.matches.team1_logo ?? undefined,
+      team2Logo: row.matches.team2_logo ?? undefined,
       kickoffAt: new Date(row.matches.kickoff_at),
     },
     prediction: row.prediction,

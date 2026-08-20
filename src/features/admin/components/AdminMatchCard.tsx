@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 import type { AdminMatch } from "@/features/admin/types/admin.types";
+import { TeamLogo } from "@/shared/components/TeamLogo";
 
 type AdminMatchCardProps = {
   match: AdminMatch;
@@ -93,10 +94,21 @@ function AdminMatchCardComponent({
       {/* En-tête : équipes + statut */}
       <View className="flex-row items-start justify-between gap-3 mb-3">
         <View className="flex-1 min-w-0">
-          <Text className="font-poppins-black text-base text-zinc-900" numberOfLines={1}>
-            {match.team1}{" "}
-            <Text className="font-poppins-semibold text-sm text-zinc-400">vs</Text> {match.team2}
-          </Text>
+          <View className="flex-row items-start justify-between gap-2">
+            <View className="min-w-0 flex-1 items-center">
+              <TeamLogo logoUrl={match.team1Logo} teamName={match.team1} size="lg" />
+              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+              {match.team1}
+              </Text>
+            </View>
+            <Text className="mt-4 font-poppins-semibold text-sm text-zinc-400">vs</Text>
+            <View className="min-w-0 flex-1 items-center">
+              <TeamLogo logoUrl={match.team2Logo} teamName={match.team2} size="lg" />
+              <Text className="mt-2 text-center font-poppins-black text-sm text-zinc-900" numberOfLines={1}>
+              {match.team2}
+              </Text>
+            </View>
+          </View>
           <Text className="mt-1 font-poppins-semibold text-xs uppercase text-zinc-500">
             {format(match.kickoffAt, "EEE d MMM · HH:mm", { locale: fr })}
           </Text>

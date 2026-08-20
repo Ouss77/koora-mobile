@@ -120,34 +120,6 @@ export function PredictionScreen() {
 
   const header = (
     <View className="gap-4">
-      <View className="overflow-hidden rounded-lg bg-green-800 p-4">
-        <View className="absolute -right-8 -top-8 h-24 w-24 rounded-full border-[14px] border-green-600/40" />
-        <View className="absolute bottom-4 right-8 h-10 w-10 rounded-lg bg-amber-300/25" />
-
-        <View className="flex-row items-center gap-2">
-          <Trophy size={17} color="#fde68a" />
-          <Text className="text-xs font-poppins-black uppercase text-green-100">
-            Challenge du jour
-          </Text>
-        </View>
-        <Text className="mt-2 text-2xl font-poppins-black text-white">
-          Choisis tes vainqueurs
-        </Text>
-        <View className="mt-3 flex-row gap-2">
-          <View className="rounded-lg bg-green-700 px-3 py-2">
-            <Text className="text-xs font-poppins-semibold text-green-100">
-              Jackpot
-            </Text>
-            <Text className="text-base font-poppins-black text-white">2,500 pts</Text>
-          </View>
-          <View className="rounded-lg bg-green-700 px-3 py-2">
-            <Text className="text-xs font-poppins-semibold text-green-100">
-              Objectif
-            </Text>
-            <Text className="text-base font-poppins-black text-white">5 picks</Text>
-          </View>
-        </View>
-      </View>
 
       <View className="pb-1">
         <Text className="text-2xl font-poppins-black text-zinc-950">
