@@ -40,14 +40,14 @@ function parseHHmm(timeStr: string): { hours: number; minutes: number } | null {
  */
 export const matchFormSchema = z
   .object({
-    team1: z
+    team1_id: z
       .string()
       .trim()
-      .min(1, "L'équipe 1 est obligatoire"),
-    team2: z
+      .uuid("Sélectionne l'équipe 1 dans la liste"),
+    team2_id: z
       .string()
       .trim()
-      .min(1, "L'équipe 2 est obligatoire"),
+      .uuid("Sélectionne l'équipe 2 dans la liste"),
     // Format : DD/MM/YYYY
     dateStr: z
       .string()
@@ -61,9 +61,9 @@ export const matchFormSchema = z
       .transform((val) => parseHHmm(val))
       .refine((time) => time !== null, "Heure invalide"),
   })
-  .refine((data) => data.team1.toLowerCase() !== data.team2.toLowerCase(), {
+  .refine((data) => data.team1_id !== data.team2_id, {
     message: "Les deux équipes doivent être différentes",
-    path: ["team2"],
+    path: ["team2_id"],
   })
   .transform((data) => {
     // Fusionne date + heure en un seul objet Date
@@ -72,8 +72,8 @@ export const matchFormSchema = z
     date.setHours(time.hours, time.minutes, 0, 0);
 
     return {
-      team1: data.team1,
-      team2: data.team2,
+      team1_id: data.team1_id,
+      team2_id: data.team2_id,
       kickoffAt: date,
     };
   })

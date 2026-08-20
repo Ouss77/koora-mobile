@@ -7,6 +7,7 @@ import { MatchResult } from "@/features/matches/types/match-result";
 
 import { PredictionSelector } from "./PredictionSelector";
 import { useCountdown } from "@/shared/hooks/useCountdown";
+import { TeamLogo } from "@/shared/components/TeamLogo";
 
 type Props = {
   match: Match;
@@ -18,8 +19,6 @@ export function PredictionCard({ match, value, onChange }: Props) {
   
   const kickoff = new Date(match.kickoffAt);   // gardé : sert juste à format() pour l'affichage
   const lockText = useCountdown(match.kickoffAt);
-  const team1Initial = match.team1.trim().charAt(0).toUpperCase();
-  const team2Initial = match.team2.trim().charAt(0).toUpperCase();
 
   return (
     <View className="gap-3 rounded-lg border border-zinc-200 bg-white p-4">
@@ -43,15 +42,8 @@ export function PredictionCard({ match, value, onChange }: Props) {
 
       <View className="flex-row items-center justify-between">
         <View className="min-w-0 flex-1 items-center">
-          <View className="h-12 w-12 items-center justify-center rounded-full bg-sky-50">
-            <Text className="text-lg font-poppins-black text-green-700">
-              {team1Initial}
-            </Text>
-          </View>
-          <Text
-            className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900"
-            numberOfLines={1}
-          >
+          <TeamLogo logoUrl={match.team1Logo} teamName={match.team1} size="lg" />
+          <Text className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900" numberOfLines={1}>
             {match.team1}
           </Text>
         </View>
@@ -67,15 +59,8 @@ export function PredictionCard({ match, value, onChange }: Props) {
         </View>
 
         <View className="min-w-0 flex-1 items-center">
-          <View className="h-12 w-12 items-center justify-center rounded-full bg-sky-50">
-            <Text className="text-lg font-poppins-black text-green-700">
-              {team2Initial}
-            </Text>
-          </View>
-          <Text
-            className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900"
-            numberOfLines={1}
-          >
+          <TeamLogo logoUrl={match.team2Logo} teamName={match.team2} size="lg" />
+          <Text className="mt-2 text-center text-sm font-poppins-semibold text-zinc-900" numberOfLines={1}>
             {match.team2}
           </Text>
         </View>

@@ -10,6 +10,8 @@ export interface RawResultRow {
     id: string;
     team1: string;
     team2: string;
+    team1_logo?: string | null;
+    team2_logo?: string | null;
     kickoff_at: string;
     result: MatchResultValue; // non-null : on ne requête que des matchs finished
   };
@@ -22,6 +24,8 @@ export interface MyResult {
     id: string;
     team1: string;
     team2: string;
+    team1Logo?: string;
+    team2Logo?: string;
     kickoffAt: Date;
   };
   prediction: MatchResultValue;
